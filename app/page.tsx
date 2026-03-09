@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { startWorkout } from "./actions";
 import { requireAuth } from "@/lib/session";
 import SignOutButton from "./SignOutButton";
+import { startWorkoutFromTemplate } from "./actions";
 
 function formatDuration(start: Date, end: Date) {
   const mins = Math.round((end.getTime() - start.getTime()) / 60000);
@@ -19,7 +20,7 @@ export default async function Home() {
   startOfWeek.setDate(now.getDate() - daysFromMonday);
   startOfWeek.setHours(0, 0, 0, 0);
 
-  const [totalWorkouts, workoutsThisWeek, totalExercisesLogged, recentWorkouts, recentExercises] =
+  const [totalWorkouts, workoutsThisWeek, totalExercisesLogged, recentWorkouts, recentExercises, templates] =
     await Promise.all([
       prisma.workoutSession.count({ where: { clerkUserId: userId, endedAt: { not: null } } }),
       prisma.workoutSession.count({
@@ -39,6 +40,12 @@ export default async function Home() {
         take: 6,
         include: { exercise: { select: { id: true, name: true } } },
       }),
+      prisma.workoutTemplate.findMany({
+        where: { clerkUserId: userId },
+        orderBy: { createdAt: "desc" },
+        take: 5,
+        include: { _count: { select: { exercises: true } } },
+      }),
     ]);
 
   return (
@@ -48,6 +55,7 @@ export default async function Home() {
         <div className="flex gap-4 text-sm text-gray-500 items-center">
           <Link href="/history" className="hover:text-gray-700">History</Link>
           <Link href="/progress" className="hover:text-gray-700">Progress</Link>
+          <Link href="/templates" className="hover:text-gray-700">Templates</Link>
           <SignOutButton />
         </div>
       </div>
@@ -80,6 +88,45 @@ export default async function Home() {
             Start Workout
           </button>
         </form>
+      </div>
+
+      {/* Templates */}
+      <div className="mb-8">
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="font-semibold">Templates</h2>
+          <Link href="/templates" className="text-xs text-gray-400 hover:text-gray-600">
+            View all
+          </Link>
+        </div>
+        {templates.length === 0 ? (
+          <Link
+            href="/templates/new"
+            className="block border-2 border-dashed border-gray-200 rounded-lg p-4 text-sm text-gray-400 hover:border-gray-300 hover:text-gray-500 text-center"
+          >
+            + Create your first template
+          </Link>
+        ) : (
+          <ul className="space-y-2">
+            {templates.map((t) => (
+              <li key={t.id} className="border rounded-lg p-3 flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium">{t.name}</p>
+                  <p className="text-xs text-gray-400">
+                    {t._count.exercises} {t._count.exercises === 1 ? "exercise" : "exercises"}
+                  </p>
+                </div>
+                <form action={startWorkoutFromTemplate.bind(null, t.id)}>
+                  <button
+                    type="submit"
+                    className="text-sm bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-lg"
+                  >
+                    Start →
+                  </button>
+                </form>
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
 
       <div className="grid grid-cols-1 gap-8 sm:grid-cols-2">

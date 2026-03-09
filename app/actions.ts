@@ -93,6 +93,99 @@ export async function endWorkout(sessionId: number): Promise<void> {
   redirect("/");
 }
 
+export async function createTemplate(formData: FormData): Promise<void> {
+  const { userId } = await requireAuth();
+  const trimmed = (formData.get("name") as string ?? "").trim();
+  if (!trimmed) return;
+
+  const template = await prisma.workoutTemplate.create({
+    data: { clerkUserId: userId, name: trimmed },
+  });
+  redirect(`/templates/${template.id}`);
+}
+
+export async function addExerciseToTemplate(templateId: number, exerciseId: number): Promise<void> {
+  const { userId } = await requireAuth();
+  const template = await prisma.workoutTemplate.findUnique({ where: { id: templateId } });
+  if (!template || template.clerkUserId !== userId) return;
+
+  const existing = await prisma.templateExercise.findFirst({
+    where: { templateId, exerciseId },
+  });
+  if (existing) { redirect(`/templates/${templateId}`); return; }
+
+  const last = await prisma.templateExercise.findFirst({
+    where: { templateId },
+    orderBy: { orderIndex: "desc" },
+  });
+  const orderIndex = last ? last.orderIndex + 1 : 0;
+
+  await prisma.templateExercise.create({
+    data: { templateId, exerciseId, orderIndex },
+  });
+  redirect(`/templates/${templateId}`);
+}
+
+export async function createAndAddExerciseToTemplate(templateId: number, name: string): Promise<void> {
+  const { userId } = await requireAuth();
+  const template = await prisma.workoutTemplate.findUnique({ where: { id: templateId } });
+  if (!template || template.clerkUserId !== userId) return;
+
+  const trimmed = name.trim();
+  if (!trimmed) return;
+
+  let exercise = await prisma.exercise.findUnique({ where: { name: trimmed } });
+  if (!exercise) {
+    exercise = await prisma.exercise.create({ data: { name: trimmed, isCustom: true } });
+  }
+
+  await addExerciseToTemplate(templateId, exercise.id);
+}
+
+export async function removeExerciseFromTemplate(templateExerciseId: number, templateId: number): Promise<void> {
+  const { userId } = await requireAuth();
+  const te = await prisma.templateExercise.findUnique({
+    where: { id: templateExerciseId },
+    include: { template: { select: { clerkUserId: true } } },
+  });
+  if (!te || te.template.clerkUserId !== userId) return;
+
+  await prisma.templateExercise.delete({ where: { id: templateExerciseId } });
+  redirect(`/templates/${templateId}`);
+}
+
+export async function deleteTemplate(templateId: number): Promise<void> {
+  const { userId } = await requireAuth();
+  const template = await prisma.workoutTemplate.findUnique({ where: { id: templateId } });
+  if (!template || template.clerkUserId !== userId) return;
+
+  await prisma.workoutTemplate.delete({ where: { id: templateId } });
+  redirect("/templates");
+}
+
+export async function startWorkoutFromTemplate(templateId: number): Promise<void> {
+  const { userId } = await requireAuth();
+  const template = await prisma.workoutTemplate.findUnique({
+    where: { id: templateId },
+    include: { exercises: { orderBy: { orderIndex: "asc" } } },
+  });
+  if (!template || template.clerkUserId !== userId) return;
+
+  const session = await prisma.workoutSession.create({
+    data: { clerkUserId: userId },
+  });
+
+  await Promise.all(
+    template.exercises.map((te, idx) =>
+      prisma.workoutExercise.create({
+        data: { workoutSessionId: session.id, exerciseId: te.exerciseId, orderIndex: idx },
+      })
+    )
+  );
+
+  redirect(`/workout/${session.id}`);
+}
+
 export async function deleteWorkout(sessionId: number): Promise<void> {
   const { userId } = await requireAuth();
   const session = await prisma.workoutSession.findUnique({ where: { id: sessionId } });
