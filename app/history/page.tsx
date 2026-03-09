@@ -12,7 +12,7 @@ export default async function HistoryPage() {
   const { userId } = await requireAuth();
 
   const sessions = await prisma.workoutSession.findMany({
-    where: { userId },
+    where: { clerkUserId: userId },
     orderBy: { startedAt: "desc" },
     include: {
       _count: { select: { workoutExercises: true } },

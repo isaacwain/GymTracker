@@ -15,12 +15,12 @@ export type ExerciseProgressResult = {
 
 export async function getExerciseProgress(
   exerciseId: number,
-  userId: number
+  clerkUserId: string
 ): Promise<ExerciseProgressResult> {
   const workoutExercises = await prisma.workoutExercise.findMany({
     where: {
       exerciseId,
-      session: { userId, endedAt: { not: null } },
+      session: { clerkUserId, endedAt: { not: null } },
     },
     orderBy: { session: { startedAt: "asc" } },
     include: {

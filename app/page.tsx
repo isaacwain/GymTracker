@@ -21,19 +21,19 @@ export default async function Home() {
 
   const [totalWorkouts, workoutsThisWeek, totalExercisesLogged, recentWorkouts, recentExercises] =
     await Promise.all([
-      prisma.workoutSession.count({ where: { userId, endedAt: { not: null } } }),
+      prisma.workoutSession.count({ where: { clerkUserId: userId, endedAt: { not: null } } }),
       prisma.workoutSession.count({
-        where: { userId, endedAt: { not: null }, startedAt: { gte: startOfWeek } },
+        where: { clerkUserId: userId, endedAt: { not: null }, startedAt: { gte: startOfWeek } },
       }),
-      prisma.workoutExercise.count({ where: { session: { userId } } }),
+      prisma.workoutExercise.count({ where: { session: { clerkUserId: userId } } }),
       prisma.workoutSession.findMany({
-        where: { userId, endedAt: { not: null } },
+        where: { clerkUserId: userId, endedAt: { not: null } },
         orderBy: { startedAt: "desc" },
         take: 5,
         include: { _count: { select: { workoutExercises: true } } },
       }),
       prisma.workoutExercise.findMany({
-        where: { session: { userId } },
+        where: { session: { clerkUserId: userId } },
         distinct: ["exerciseId"],
         orderBy: { createdAt: "desc" },
         take: 6,

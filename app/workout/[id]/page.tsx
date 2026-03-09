@@ -28,7 +28,7 @@ export default async function WorkoutPage({
     },
   });
 
-  if (!session || session.userId !== userId) notFound();
+  if (!session || session.clerkUserId !== userId) notFound();
 
   const allExercises = await prisma.exercise.findMany({
     orderBy: { name: "asc" },
@@ -37,14 +37,14 @@ export default async function WorkoutPage({
 
   const alreadyAddedIds = session.workoutExercises.map((we) => we.exerciseId);
 
-  // Previous performance per exercise
+  // Previous performance per exercise (scoped to this user)
   const previousPerformance = await Promise.all(
     session.workoutExercises.map(async (we) => {
       const prev = await prisma.workoutExercise.findFirst({
         where: {
           exerciseId: we.exerciseId,
           workoutSessionId: { not: sessionId },
-          session: { userId },
+          session: { clerkUserId: userId },
           sets: { some: { weight: { not: null } } },
         },
         orderBy: { session: { startedAt: "desc" } },

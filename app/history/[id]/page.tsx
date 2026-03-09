@@ -31,7 +31,7 @@ export default async function WorkoutDetailPage({
     },
   });
 
-  if (!session || session.userId !== userId) notFound();
+  if (!session || session.clerkUserId !== userId) notFound();
 
   return (
     <main className="p-8 max-w-xl mx-auto">

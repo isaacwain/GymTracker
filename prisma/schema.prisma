@@ -3,24 +3,19 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = env("DATABASE_URL")
-}
-
-model User {
-  id           Int              @id @default(autoincrement())
-  email        String           @unique
-  passwordHash String?
-  sessions     WorkoutSession[]
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 model WorkoutSession {
   id               Int               @id @default(autoincrement())
-  userId           Int
+  clerkUserId      String
   startedAt        DateTime          @default(now())
   endedAt          DateTime?
-  user             User              @relation(fields: [userId], references: [id])
   workoutExercises WorkoutExercise[]
+
+  @@index([clerkUserId])
 }
 
 model Exercise {

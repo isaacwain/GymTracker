@@ -18,7 +18,7 @@ export default async function ProgressPage({
     where: {
       workoutExercises: {
         some: {
-          session: { userId, endedAt: { not: null } },
+          session: { clerkUserId: userId, endedAt: { not: null } },
           sets: { some: { weight: { not: null } } },
         },
       },

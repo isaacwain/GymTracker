@@ -1,19 +1,16 @@
-import { getToken } from "next-auth/jwt";
-import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
+import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 
-export async function middleware(request: NextRequest) {
-  const token = await getToken({ req: request });
+const isPublicRoute = createRouteMatcher(["/sign-in(.*)", "/sign-up(.*)"]);
 
-  if (!token) {
-    return NextResponse.redirect(new URL("/signin", request.url));
+export default clerkMiddleware(async (auth, request) => {
+  if (!isPublicRoute(request)) {
+    await auth.protect();
   }
-
-  return NextResponse.next();
-}
+});
 
 export const config = {
   matcher: [
-    "/((?!api/auth|_next/static|_next/image|favicon.ico|signin|signup).*)",
+    "/((?!_next/static|_next/image|favicon.ico).*)",
+    "/(api|trpc)(.*)",
   ],
 };

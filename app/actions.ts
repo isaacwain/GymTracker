@@ -3,24 +3,12 @@
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import { requireAuth } from "@/lib/session";
-import bcrypt from "bcryptjs";
-
-export async function signUp(
-  email: string,
-  password: string
-): Promise<{ error: string } | void> {
-  const existing = await prisma.user.findUnique({ where: { email } });
-  if (existing) return { error: "An account with this email already exists." };
-
-  const passwordHash = await bcrypt.hash(password, 12);
-  await prisma.user.create({ data: { email, passwordHash } });
-}
 
 export async function startWorkout() {
   const { userId } = await requireAuth();
 
   const session = await prisma.workoutSession.create({
-    data: { userId },
+    data: { clerkUserId: userId },
   });
 
   redirect(`/workout/${session.id}`);
@@ -46,7 +34,7 @@ async function appendExerciseToSession(sessionId: number, exerciseId: number) {
 export async function addExerciseById(sessionId: number, exerciseId: number) {
   const { userId } = await requireAuth();
   const session = await prisma.workoutSession.findUnique({ where: { id: sessionId } });
-  if (!session || session.userId !== userId) return;
+  if (!session || session.clerkUserId !== userId) return;
 
   await appendExerciseToSession(sessionId, exerciseId);
   redirect(`/workout/${sessionId}`);
@@ -55,7 +43,7 @@ export async function addExerciseById(sessionId: number, exerciseId: number) {
 export async function createAndAddExercise(sessionId: number, name: string) {
   const { userId } = await requireAuth();
   const session = await prisma.workoutSession.findUnique({ where: { id: sessionId } });
-  if (!session || session.userId !== userId) return;
+  if (!session || session.clerkUserId !== userId) return;
 
   const trimmed = name.trim();
   if (!trimmed) return;
@@ -79,9 +67,9 @@ export async function saveExerciseSets(
 
   const we = await prisma.workoutExercise.findUnique({
     where: { id: workoutExerciseId },
-    include: { session: { select: { userId: true } } },
+    include: { session: { select: { clerkUserId: true } } },
   });
-  if (!we || we.session.userId !== userId) return;
+  if (!we || we.session.clerkUserId !== userId) return;
 
   await prisma.setEntry.deleteMany({ where: { workoutExerciseId } });
   await Promise.all(
@@ -96,7 +84,7 @@ export async function saveExerciseSets(
 export async function endWorkout(sessionId: number): Promise<void> {
   const { userId } = await requireAuth();
   const session = await prisma.workoutSession.findUnique({ where: { id: sessionId } });
-  if (!session || session.userId !== userId) return;
+  if (!session || session.clerkUserId !== userId) return;
 
   await prisma.workoutSession.update({
     where: { id: sessionId },
@@ -108,7 +96,7 @@ export async function endWorkout(sessionId: number): Promise<void> {
 export async function deleteWorkout(sessionId: number): Promise<void> {
   const { userId } = await requireAuth();
   const session = await prisma.workoutSession.findUnique({ where: { id: sessionId } });
-  if (!session || session.userId !== userId) return;
+  if (!session || session.clerkUserId !== userId) return;
 
   const workoutExercises = await prisma.workoutExercise.findMany({
     where: { workoutSessionId: sessionId },
