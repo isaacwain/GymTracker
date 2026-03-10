@@ -37,7 +37,6 @@ export default async function WorkoutPage({
 
   const alreadyAddedIds = session.workoutExercises.map((we) => we.exerciseId);
 
-  // Previous performance per exercise (scoped to this user)
   const previousPerformance = await Promise.all(
     session.workoutExercises.map(async (we) => {
       const prev = await prisma.workoutExercise.findFirst({
@@ -60,71 +59,71 @@ export default async function WorkoutPage({
   const isCompleted = !!session.endedAt;
 
   return (
-    <main className="p-8 max-w-xl mx-auto">
-      <div className="flex items-center justify-between mb-1">
-        <h1 className="text-2xl font-bold">
-          {isCompleted
-            ? session.startedAt.toLocaleDateString(undefined, {
-                weekday: "short",
-                month: "short",
-                day: "numeric",
-              })
-            : "Workout in progress"}
-        </h1>
-        {isCompleted && (
-          <Link href={`/history/${sessionId}`} className="text-sm text-gray-500 hover:text-gray-700">
-            ← History
-          </Link>
+    <div className="min-h-screen bg-slate-50">
+      <div className="max-w-xl mx-auto px-4 py-8">
+        <div className="flex items-center justify-between mb-1">
+          <h1 className="text-2xl font-bold tracking-tight text-gray-900">
+            {isCompleted
+              ? session.startedAt.toLocaleDateString(undefined, {
+                  weekday: "short",
+                  month: "short",
+                  day: "numeric",
+                })
+              : "Workout in progress"}
+          </h1>
+          {isCompleted && (
+            <Link href={`/history/${sessionId}`} className="text-sm text-gray-400 hover:text-gray-600 transition-colors">
+              ← History
+            </Link>
+          )}
+        </div>
+        <p className="text-sm text-gray-400 mb-8">
+          {session.startedAt.toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" })}
+        </p>
+
+        <ExercisePicker
+          sessionId={sessionId}
+          allExercises={allExercises}
+          alreadyAddedIds={alreadyAddedIds}
+        />
+
+        {session.workoutExercises.length === 0 ? (
+          <p className="text-sm text-gray-400">No exercises added yet</p>
+        ) : (
+          <div className="space-y-4">
+            {session.workoutExercises.map((we) => {
+              const prevSets = prevPerfMap[we.id] ?? [];
+              const filledSets = prevSets.filter((s) => s.weight != null);
+              const prevSummary =
+                filledSets.length > 0
+                  ? filledSets.map((s) => `${s.weight}kg × ${s.reps ?? "—"}`).join(", ")
+                  : null;
+
+              return (
+                <div key={we.id} className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
+                  <h3 className="font-semibold text-gray-900 mb-3">{we.exercise.name}</h3>
+                  <SetLogger
+                    workoutExerciseId={we.id}
+                    prevSummary={prevSummary}
+                    initialSets={we.sets}
+                  />
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+        {!isCompleted && (
+          <form action={endWorkout.bind(null, sessionId)} className="mt-8">
+            <button
+              type="submit"
+              className="w-full border border-red-200 text-red-400 hover:bg-red-50 hover:border-red-300 py-2.5 rounded-xl text-sm font-medium transition-colors"
+            >
+              End Workout
+            </button>
+          </form>
         )}
       </div>
-      <p className="text-gray-500 mb-8 text-sm">
-        {session.startedAt.toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" })}
-      </p>
-
-      <ExercisePicker
-        sessionId={sessionId}
-        allExercises={allExercises}
-        alreadyAddedIds={alreadyAddedIds}
-      />
-
-      {session.workoutExercises.length === 0 ? (
-        <p className="text-gray-400">No exercises added yet</p>
-      ) : (
-        <div className="space-y-6">
-          {session.workoutExercises.map((we) => {
-            const prevSets = prevPerfMap[we.id] ?? [];
-            const filledSets = prevSets.filter((s) => s.weight != null);
-            const prevSummary =
-              filledSets.length > 0
-                ? filledSets
-                    .map((s) => `${s.weight}kg × ${s.reps ?? "—"}`)
-                    .join(", ")
-                : null;
-
-            return (
-              <div key={we.id} className="border rounded-lg p-4">
-                <h3 className="font-semibold text-lg mb-3">{we.exercise.name}</h3>
-                <SetLogger
-                  workoutExerciseId={we.id}
-                  prevSummary={prevSummary}
-                  initialSets={we.sets}
-                />
-              </div>
-            );
-          })}
-        </div>
-      )}
-
-      {!isCompleted && (
-        <form action={endWorkout.bind(null, sessionId)} className="mt-10">
-          <button
-            type="submit"
-            className="w-full border border-red-300 text-red-500 hover:bg-red-50 py-2 rounded-lg text-sm"
-          >
-            End Workout
-          </button>
-        </form>
-      )}
-    </main>
+    </div>
   );
 }

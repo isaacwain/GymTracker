@@ -49,151 +49,164 @@ export default async function Home() {
     ]);
 
   return (
-    <main className="p-8 max-w-2xl mx-auto">
-      <div className="flex items-center justify-between mb-8">
-        <h1 className="text-2xl font-bold">Gym Tracker</h1>
-        <div className="flex gap-4 text-sm text-gray-500 items-center">
-          <Link href="/history" className="hover:text-gray-700">History</Link>
-          <Link href="/progress" className="hover:text-gray-700">Progress</Link>
-          <Link href="/templates" className="hover:text-gray-700">Templates</Link>
-          <SignOutButton />
-        </div>
-      </div>
+    <div className="min-h-screen bg-slate-50">
+      <div className="max-w-2xl mx-auto px-4 py-8">
 
-      {/* Stats row */}
-      <div className="grid grid-cols-3 gap-4 mb-8">
-        {[
-          { label: "Total workouts", value: totalWorkouts },
-          { label: "This week", value: workoutsThisWeek },
-          { label: "Exercises logged", value: totalExercisesLogged },
-        ].map(({ label, value }) => (
-          <div key={label} className="border rounded-lg p-4 text-center">
-            <p className="text-2xl font-bold">{value}</p>
-            <p className="text-xs text-gray-400 mt-0.5">{label}</p>
+        {/* Header */}
+        <div className="flex items-center justify-between mb-8">
+          <h1 className="text-2xl font-bold tracking-tight text-gray-900">Gym Tracker</h1>
+          <div className="flex items-center gap-5 text-sm text-gray-500">
+            <Link href="/history" className="hover:text-gray-900 transition-colors">History</Link>
+            <Link href="/progress" className="hover:text-gray-900 transition-colors">Progress</Link>
+            <Link href="/templates" className="hover:text-gray-900 transition-colors">Templates</Link>
+            <SignOutButton />
           </div>
-        ))}
-      </div>
-
-      {/* Start workout */}
-      <div className="border rounded-lg p-6 mb-8 flex items-center justify-between">
-        <div>
-          <h2 className="font-semibold text-lg">Ready to train?</h2>
-          <p className="text-sm text-gray-400">Start a new workout session</p>
         </div>
-        <form action={startWorkout}>
-          <button
-            type="submit"
-            className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 px-5 rounded-lg"
-          >
-            Start Workout
-          </button>
-        </form>
-      </div>
 
-      {/* Templates */}
-      <div className="mb-8">
-        <div className="flex items-center justify-between mb-3">
-          <h2 className="font-semibold">Templates</h2>
-          <Link href="/templates" className="text-xs text-gray-400 hover:text-gray-600">
-            View all
-          </Link>
+        {/* Stats */}
+        <div className="grid grid-cols-3 gap-3 mb-6">
+          {[
+            { label: "Total workouts", value: totalWorkouts },
+            { label: "This week", value: workoutsThisWeek },
+            { label: "Exercises logged", value: totalExercisesLogged },
+          ].map(({ label, value }) => (
+            <div key={label} className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 text-center">
+              <p className="text-3xl font-bold text-gray-900">{value}</p>
+              <p className="text-xs text-gray-400 mt-1">{label}</p>
+            </div>
+          ))}
         </div>
-        {templates.length === 0 ? (
-          <Link
-            href="/templates/new"
-            className="block border-2 border-dashed border-gray-200 rounded-lg p-4 text-sm text-gray-400 hover:border-gray-300 hover:text-gray-500 text-center"
-          >
-            + Create your first template
-          </Link>
-        ) : (
-          <ul className="space-y-2">
-            {templates.map((t) => (
-              <li key={t.id} className="border rounded-lg p-3 flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium">{t.name}</p>
-                  <p className="text-xs text-gray-400">
-                    {t._count.exercises} {t._count.exercises === 1 ? "exercise" : "exercises"}
-                  </p>
-                </div>
-                <form action={startWorkoutFromTemplate.bind(null, t.id)}>
-                  <button
-                    type="submit"
-                    className="text-sm bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-lg"
-                  >
-                    Start →
-                  </button>
-                </form>
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
 
-      <div className="grid grid-cols-1 gap-8 sm:grid-cols-2">
-        {/* Recent workouts */}
-        <div>
+        {/* Start workout */}
+        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 mb-6 flex items-center justify-between">
+          <div>
+            <h2 className="font-semibold text-gray-900">Ready to train?</h2>
+            <p className="text-sm text-gray-400 mt-0.5">Start a new workout session</p>
+          </div>
+          <form action={startWorkout}>
+            <button
+              type="submit"
+              className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2.5 px-5 rounded-xl transition-colors text-sm"
+            >
+              Start Workout
+            </button>
+          </form>
+        </div>
+
+        {/* Templates */}
+        <div className="mb-6">
           <div className="flex items-center justify-between mb-3">
-            <h2 className="font-semibold">Recent Workouts</h2>
-            <Link href="/history" className="text-xs text-gray-400 hover:text-gray-600">
+            <p className="text-xs font-semibold uppercase tracking-wider text-gray-400">Templates</p>
+            <Link href="/templates" className="text-xs text-gray-400 hover:text-gray-600 transition-colors">
               View all
             </Link>
           </div>
-          {recentWorkouts.length === 0 ? (
-            <p className="text-sm text-gray-400">No completed workouts yet.</p>
+          {templates.length === 0 ? (
+            <Link
+              href="/templates/new"
+              className="flex items-center justify-center border-2 border-dashed border-gray-200 rounded-2xl p-5 text-sm text-gray-400 hover:border-indigo-300 hover:text-indigo-500 transition-colors"
+            >
+              + Create your first template
+            </Link>
           ) : (
             <ul className="space-y-2">
-              {recentWorkouts.map((s) => (
-                <li key={s.id}>
-                  <Link
-                    href={`/history/${s.id}`}
-                    className="block border rounded-lg p-3 hover:bg-gray-50 text-sm"
-                  >
-                    <p className="font-medium">
-                      {s.startedAt.toLocaleDateString(undefined, {
-                        weekday: "short",
-                        month: "short",
-                        day: "numeric",
-                      })}
+              {templates.map((t) => (
+                <li key={t.id} className="bg-white rounded-xl border border-gray-100 shadow-sm px-4 py-3 flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium text-gray-900">{t.name}</p>
+                    <p className="text-xs text-gray-400 mt-0.5">
+                      {t._count.exercises} {t._count.exercises === 1 ? "exercise" : "exercises"}
                     </p>
-                    <p className="text-gray-400 text-xs mt-0.5">
-                      {s.endedAt && formatDuration(s.startedAt, s.endedAt)}
-                      {" · "}
-                      {s._count.workoutExercises}{" "}
-                      {s._count.workoutExercises === 1 ? "exercise" : "exercises"}
-                    </p>
-                  </Link>
+                  </div>
+                  <div className="flex gap-2">
+                    <Link
+                      href={`/templates/${t.id}`}
+                      className="text-xs text-gray-400 hover:text-gray-600 px-3 py-1.5 border border-gray-200 rounded-lg transition-colors"
+                    >
+                      Edit
+                    </Link>
+                    <form action={startWorkoutFromTemplate.bind(null, t.id)}>
+                      <button
+                        type="submit"
+                        className="text-xs bg-indigo-600 hover:bg-indigo-700 text-white font-medium px-3 py-1.5 rounded-lg transition-colors"
+                      >
+                        Start →
+                      </button>
+                    </form>
+                  </div>
                 </li>
               ))}
             </ul>
           )}
         </div>
 
-        {/* Quick progress */}
-        <div>
-          <div className="flex items-center justify-between mb-3">
-            <h2 className="font-semibold">Recent Exercises</h2>
-            <Link href="/progress" className="text-xs text-gray-400 hover:text-gray-600">
-              View all
-            </Link>
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+          {/* Recent workouts */}
+          <div>
+            <div className="flex items-center justify-between mb-3">
+              <p className="text-xs font-semibold uppercase tracking-wider text-gray-400">Recent Workouts</p>
+              <Link href="/history" className="text-xs text-gray-400 hover:text-gray-600 transition-colors">
+                View all
+              </Link>
+            </div>
+            {recentWorkouts.length === 0 ? (
+              <p className="text-sm text-gray-400">No completed workouts yet.</p>
+            ) : (
+              <ul className="space-y-2">
+                {recentWorkouts.map((s) => (
+                  <li key={s.id}>
+                    <Link
+                      href={`/history/${s.id}`}
+                      className="block bg-white rounded-xl border border-gray-100 shadow-sm px-4 py-3 hover:shadow-md transition-shadow"
+                    >
+                      <p className="text-sm font-medium text-gray-900">
+                        {s.startedAt.toLocaleDateString(undefined, {
+                          weekday: "short",
+                          month: "short",
+                          day: "numeric",
+                        })}
+                      </p>
+                      <p className="text-xs text-gray-400 mt-0.5">
+                        {s.endedAt && formatDuration(s.startedAt, s.endedAt)}
+                        {" · "}
+                        {s._count.workoutExercises}{" "}
+                        {s._count.workoutExercises === 1 ? "exercise" : "exercises"}
+                      </p>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
-          {recentExercises.length === 0 ? (
-            <p className="text-sm text-gray-400">No exercises logged yet.</p>
-          ) : (
-            <ul className="space-y-2">
-              {recentExercises.map((we) => (
-                <li key={we.exercise.id}>
-                  <Link
-                    href={`/progress?exercise=${we.exercise.id}`}
-                    className="block border rounded-lg p-3 hover:bg-gray-50 text-sm font-medium"
-                  >
-                    {we.exercise.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          )}
+
+          {/* Recent exercises */}
+          <div>
+            <div className="flex items-center justify-between mb-3">
+              <p className="text-xs font-semibold uppercase tracking-wider text-gray-400">Recent Exercises</p>
+              <Link href="/progress" className="text-xs text-gray-400 hover:text-gray-600 transition-colors">
+                View all
+              </Link>
+            </div>
+            {recentExercises.length === 0 ? (
+              <p className="text-sm text-gray-400">No exercises logged yet.</p>
+            ) : (
+              <ul className="space-y-2">
+                {recentExercises.map((we) => (
+                  <li key={we.exercise.id}>
+                    <Link
+                      href={`/progress?exercise=${we.exercise.id}`}
+                      className="block bg-white rounded-xl border border-gray-100 shadow-sm px-4 py-3 hover:shadow-md transition-shadow text-sm font-medium text-gray-900"
+                    >
+                      {we.exercise.name}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
         </div>
+
       </div>
-    </main>
+    </div>
   );
 }

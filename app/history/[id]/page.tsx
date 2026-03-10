@@ -34,82 +34,72 @@ export default async function WorkoutDetailPage({
   if (!session || session.clerkUserId !== userId) notFound();
 
   return (
-    <main className="p-8 max-w-xl mx-auto">
-      <div className="flex items-center justify-between mb-8">
-        <h1 className="text-2xl font-bold">
-          {session.startedAt.toLocaleDateString(undefined, {
-            weekday: "long",
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-          })}
-        </h1>
-        <Link href="/history" className="text-sm text-gray-500 hover:text-gray-700">
-          ← History
-        </Link>
-      </div>
-
-      <div className="text-sm text-gray-500 mb-8 space-y-1">
-        <p>
-          Start:{" "}
-          {session.startedAt.toLocaleTimeString(undefined, {
-            hour: "2-digit",
-            minute: "2-digit",
-          })}
-        </p>
-        {session.endedAt ? (
-          <>
-            <p>
-              End:{" "}
-              {session.endedAt.toLocaleTimeString(undefined, {
-                hour: "2-digit",
-                minute: "2-digit",
-              })}
-            </p>
-            <p>Duration: {formatDuration(session.startedAt, session.endedAt)}</p>
-          </>
-        ) : (
-          <p className="text-yellow-500">In progress</p>
-        )}
-      </div>
-
-      {session.workoutExercises.length === 0 ? (
-        <p className="text-gray-400">No exercises recorded.</p>
-      ) : (
-        <div className="space-y-6">
-          {session.workoutExercises.map((we) => (
-            <div key={we.id}>
-              <Link
-                href={`/progress/${we.exercise.id}`}
-                className="font-semibold text-lg hover:text-blue-600"
-              >
-                {we.exercise.name}
-              </Link>
-              {we.sets.length === 0 ? (
-                <p className="text-sm text-gray-400 mt-1">No sets recorded.</p>
-              ) : (
-                <ol className="space-y-1 mt-1">
-                  {we.sets.map((s) => (
-                    <li key={s.id} className="text-sm text-gray-700">
-                      {s.setNumber}) {s.weight ?? "—"}kg × {s.reps ?? "—"}
-                    </li>
-                  ))}
-                </ol>
-              )}
-            </div>
-          ))}
+    <div className="min-h-screen bg-slate-50">
+      <div className="max-w-xl mx-auto px-4 py-8">
+        <div className="flex items-center justify-between mb-8">
+          <h1 className="text-2xl font-bold tracking-tight text-gray-900">
+            {session.startedAt.toLocaleDateString(undefined, {
+              weekday: "long",
+              month: "long",
+              day: "numeric",
+            })}
+          </h1>
+          <Link href="/history" className="text-sm text-gray-400 hover:text-gray-600 transition-colors">
+            ← History
+          </Link>
         </div>
-      )}
 
-      <div className="mt-10 pt-6 border-t flex items-center justify-between">
-        <DeleteButton sessionId={session.id} />
-        <Link
-          href={`/workout/${session.id}`}
-          className="text-sm text-blue-600 hover:text-blue-800"
-        >
-          Edit workout →
-        </Link>
+        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 mb-6 text-sm text-gray-500 space-y-1">
+          <p>Start: {session.startedAt.toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" })}</p>
+          {session.endedAt ? (
+            <>
+              <p>End: {session.endedAt.toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" })}</p>
+              <p className="font-medium text-gray-700">Duration: {formatDuration(session.startedAt, session.endedAt)}</p>
+            </>
+          ) : (
+            <p className="text-amber-500 font-medium">In progress</p>
+          )}
+        </div>
+
+        {session.workoutExercises.length === 0 ? (
+          <p className="text-sm text-gray-400">No exercises recorded.</p>
+        ) : (
+          <div className="space-y-4">
+            {session.workoutExercises.map((we) => (
+              <div key={we.id} className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
+                <Link
+                  href={`/progress/${we.exercise.id}`}
+                  className="font-semibold text-gray-900 hover:text-indigo-600 transition-colors"
+                >
+                  {we.exercise.name}
+                </Link>
+                {we.sets.length === 0 ? (
+                  <p className="text-sm text-gray-400 mt-2">No sets recorded.</p>
+                ) : (
+                  <ol className="mt-3 space-y-1.5">
+                    {we.sets.map((s) => (
+                      <li key={s.id} className="text-sm text-gray-600 flex gap-2">
+                        <span className="text-gray-400 w-5">{s.setNumber})</span>
+                        <span>{s.weight ?? "—"}kg × {s.reps ?? "—"} reps</span>
+                      </li>
+                    ))}
+                  </ol>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+
+        <div className="mt-8 pt-6 border-t border-gray-100 flex items-center justify-between">
+          <DeleteButton sessionId={session.id} />
+          <Link
+            href={`/workout/${session.id}`}
+            className="text-sm text-indigo-600 hover:text-indigo-700 font-medium transition-colors"
+          >
+            Edit workout →
+          </Link>
+        </div>
       </div>
-    </main>
+    </div>
   );
 }
