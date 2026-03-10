@@ -22,9 +22,14 @@ export default async function HistoryPage() {
       <div className="max-w-xl mx-auto px-4 py-8">
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-2xl font-bold tracking-tight text-gray-900">History</h1>
-          <Link href="/" className="text-sm text-gray-400 hover:text-gray-600 transition-colors">
-            ← Home
-          </Link>
+          <div className="flex items-center gap-4">
+            <Link href="/history/calendar" className="text-sm text-gray-400 hover:text-gray-600 transition-colors">
+              Calendar
+            </Link>
+            <Link href="/" className="text-sm text-gray-400 hover:text-gray-600 transition-colors">
+              ← Home
+            </Link>
+          </div>
         </div>
 
         {sessions.length === 0 ? (

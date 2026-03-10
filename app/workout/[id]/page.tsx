@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import ExercisePicker from "./ExercisePicker";
 import SetLogger from "./SetLogger";
+import RestTimer from "./RestTimer";
 import { endWorkout } from "@/app/actions";
 import { requireAuth } from "@/lib/session";
 
@@ -113,8 +114,10 @@ export default async function WorkoutPage({
           </div>
         )}
 
+        {!isCompleted && <RestTimer />}
+
         {!isCompleted && (
-          <form action={endWorkout.bind(null, sessionId)} className="mt-8">
+          <form action={endWorkout.bind(null, sessionId)} className="mt-2">
             <button
               type="submit"
               className="w-full border border-red-200 text-red-400 hover:bg-red-50 hover:border-red-300 py-2.5 rounded-xl text-sm font-medium transition-colors"
