@@ -6,6 +6,7 @@ import SetLogger from "./SetLogger";
 import RestTimer from "./RestTimer";
 import { endWorkout } from "@/app/actions";
 import { requireAuth } from "@/lib/session";
+import { getPRsForSession } from "@/lib/getPRs";
 
 export default async function WorkoutPage({
   params,
@@ -55,6 +56,12 @@ export default async function WorkoutPage({
   );
   const prevPerfMap = Object.fromEntries(
     previousPerformance.map((p) => [p.workoutExerciseId, p.sets])
+  );
+
+  const prMap = await getPRsForSession(
+    userId,
+    sessionId,
+    session.workoutExercises.map((we) => ({ workoutExerciseId: we.id, exerciseId: we.exerciseId }))
   );
 
   const isCompleted = !!session.endedAt;
@@ -107,6 +114,7 @@ export default async function WorkoutPage({
                     workoutExerciseId={we.id}
                     prevSummary={prevSummary}
                     initialSets={we.sets}
+                    currentPrE1rm={prMap[we.id] ?? 0}
                   />
                 </div>
               );

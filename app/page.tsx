@@ -58,6 +58,7 @@ export default async function Home() {
           <div className="flex items-center gap-5 text-sm text-gray-500">
             <Link href="/history" className="hover:text-gray-900 transition-colors">History</Link>
             <Link href="/progress" className="hover:text-gray-900 transition-colors">Progress</Link>
+            <Link href="/prs" className="hover:text-gray-900 transition-colors">PRs</Link>
             <Link href="/templates" className="hover:text-gray-900 transition-colors">Templates</Link>
             <SignOutButton />
           </div>
