@@ -26,10 +26,12 @@ export default function CalendarView({
   year,
   month,
   workoutsByDay,
+  basePath = "/history/calendar",
 }: {
   year: number;
   month: number;
   workoutsByDay: Record<string, DayWorkout[]>;
+  basePath?: string;
 }) {
   const router = useRouter();
   const [selectedDay, setSelectedDay] = useState<number | null>(null);
@@ -44,7 +46,7 @@ export default function CalendarView({
     if (m < 0) { m = 11; y--; }
     if (m > 11) { m = 0; y++; }
     setSelectedDay(null);
-    router.push(`/history/calendar?month=${y}-${String(m + 1).padStart(2, "0")}`);
+    router.push(`${basePath}?month=${y}-${String(m + 1).padStart(2, "0")}`);
   }
 
   const selectedKey = selectedDay ? toKey(year, month, selectedDay) : null;
