@@ -53,14 +53,16 @@ export default async function Home() {
       <div className="max-w-2xl mx-auto px-4 py-8">
 
         {/* Header */}
-        <div className="flex items-center justify-between mb-8">
-          <h1 className="text-2xl font-bold tracking-tight text-gray-900">Gym Tracker</h1>
-          <div className="flex items-center gap-5 text-sm text-gray-500">
+        <div className="mb-8">
+          <div className="flex items-center justify-between">
+            <h1 className="text-2xl font-bold tracking-tight text-gray-900">Gym Tracker</h1>
+            <SignOutButton />
+          </div>
+          <div className="flex items-center gap-4 text-sm text-gray-500 mt-3 flex-wrap">
             <Link href="/history" className="hover:text-gray-900 transition-colors">History</Link>
             <Link href="/progress" className="hover:text-gray-900 transition-colors">Progress</Link>
             <Link href="/prs" className="hover:text-gray-900 transition-colors">PRs</Link>
             <Link href="/templates" className="hover:text-gray-900 transition-colors">Templates</Link>
-            <SignOutButton />
           </div>
         </div>
 

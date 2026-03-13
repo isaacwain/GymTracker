@@ -24,7 +24,7 @@ export default async function WorkoutPage({
         orderBy: { orderIndex: "asc" },
         include: {
           exercise: true,
-          sets: { orderBy: { setNumber: "asc" } },
+          sets: { orderBy: { setNumber: "asc" }, select: { id: true, setNumber: true, weight: true, reps: true, notes: true } },
         },
       },
     },

@@ -61,7 +61,7 @@ export async function createAndAddExercise(sessionId: number, name: string) {
 
 export async function saveExerciseSets(
   workoutExerciseId: number,
-  sets: { setNumber: number; weight: number | null; reps: number | null }[]
+  sets: { setNumber: number; weight: number | null; reps: number | null; notes: string | null }[]
 ): Promise<void> {
   const { userId } = await requireAuth();
 
@@ -75,7 +75,7 @@ export async function saveExerciseSets(
   await Promise.all(
     sets.map((s) =>
       prisma.setEntry.create({
-        data: { workoutExerciseId, setNumber: s.setNumber, weight: s.weight, reps: s.reps },
+        data: { workoutExerciseId, setNumber: s.setNumber, weight: s.weight, reps: s.reps, notes: s.notes },
       })
     )
   );

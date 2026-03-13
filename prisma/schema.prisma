@@ -65,6 +65,7 @@ model SetEntry {
   setNumber         Int
   weight            Float?
   reps              Int?
+  notes             String?
   createdAt         DateTime        @default(now())
   updatedAt         DateTime        @updatedAt
   workoutExercise   WorkoutExercise @relation(fields: [workoutExerciseId], references: [id])
