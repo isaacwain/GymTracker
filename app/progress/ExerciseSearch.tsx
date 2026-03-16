@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-type Exercise = { id: number; name: string; muscleGroup: string | null };
+type Exercise = { id: number; name: string; primaryMuscle: string | null };
 
 export default function ExerciseSearch({
   exercises,
@@ -47,7 +47,7 @@ export default function ExerciseSearch({
                 className="w-full text-left px-4 py-2.5 hover:bg-slate-50 flex justify-between text-sm transition-colors"
               >
                 <span className="font-medium text-gray-800">{ex.name}</span>
-                <span className="text-gray-400 text-xs">{ex.muscleGroup ?? ""}</span>
+                <span className="text-gray-400 text-xs">{ex.primaryMuscle ?? ""}</span>
               </button>
             </li>
           ))}

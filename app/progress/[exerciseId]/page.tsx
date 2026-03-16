@@ -27,8 +27,8 @@ export default async function ExerciseProgressPage({
         <div className="flex items-center justify-between mb-8">
           <div>
             <h1 className="text-2xl font-bold tracking-tight text-gray-900">{exercise.name}</h1>
-            {exercise.muscleGroup && (
-              <p className="text-sm text-gray-400 mt-0.5">{exercise.muscleGroup}</p>
+            {exercise.primaryMuscle && (
+              <p className="text-sm text-gray-400 mt-0.5">{exercise.primaryMuscle}</p>
             )}
           </div>
           <Link href="/progress" className="text-sm text-gray-400 hover:text-gray-600 transition-colors">

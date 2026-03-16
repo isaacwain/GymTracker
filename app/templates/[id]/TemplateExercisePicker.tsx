@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { addExerciseToTemplate, createAndAddExerciseToTemplate } from "@/app/actions";
 
-type Exercise = { id: number; name: string; muscleGroup: string | null };
+type Exercise = { id: number; name: string; primaryMuscle: string | null };
 type Props = { templateId: number; allExercises: Exercise[]; alreadyAddedIds: number[] };
 
 export default function TemplateExercisePicker({ templateId, allExercises, alreadyAddedIds }: Props) {
@@ -37,7 +37,7 @@ export default function TemplateExercisePicker({ templateId, allExercises, alrea
                   className="w-full text-left px-4 py-2.5 text-sm hover:bg-slate-50 disabled:text-gray-300 disabled:cursor-not-allowed flex justify-between transition-colors"
                 >
                   <span className="font-medium text-gray-800">{ex.name}</span>
-                  <span className="text-xs text-gray-400">{added ? "added" : ex.muscleGroup ?? ""}</span>
+                  <span className="text-xs text-gray-400">{added ? "added" : ex.primaryMuscle ?? ""}</span>
                 </button>
               </li>
             );

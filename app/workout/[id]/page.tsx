@@ -34,7 +34,7 @@ export default async function WorkoutPage({
 
   const allExercises = await prisma.exercise.findMany({
     orderBy: { name: "asc" },
-    select: { id: true, name: true, muscleGroup: true },
+    select: { id: true, name: true, primaryMuscle: true },
   });
 
   const alreadyAddedIds = session.workoutExercises.map((we) => we.exerciseId);

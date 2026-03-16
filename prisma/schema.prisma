@@ -8,6 +8,53 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
+enum MuscleGroup {
+  CHEST
+  BACK
+  LATS
+  TRAPS
+  SHOULDERS
+  BICEPS
+  TRICEPS
+  FOREARMS
+  QUADS
+  HAMSTRINGS
+  GLUTES
+  CALVES
+  CORE
+  ABS
+}
+
+enum Equipment {
+  BARBELL
+  DUMBBELL
+  CABLE
+  MACHINE
+  BODYWEIGHT
+  SMITH_MACHINE
+  EZ_BAR
+  KETTLEBELL
+  RESISTANCE_BAND
+}
+
+enum MovementPattern {
+  HORIZONTAL_PUSH
+  VERTICAL_PUSH
+  HORIZONTAL_PULL
+  VERTICAL_PULL
+  SQUAT
+  HINGE
+  ISOLATION
+  CARRY
+  ROTATION
+}
+
+enum Difficulty {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+}
+
 model WorkoutSession {
   id               Int               @id @default(autoincrement())
   clerkUserId      String
@@ -19,13 +66,18 @@ model WorkoutSession {
 }
 
 model Exercise {
-  id               Int                @id @default(autoincrement())
-  name             String             @unique
-  muscleGroup      String?
-  equipment        String?
-  isCustom         Boolean            @default(false)
-  createdAt        DateTime           @default(now())
-  workoutExercises WorkoutExercise[]
+  id                Int               @id @default(autoincrement())
+  name              String            @unique
+  primaryMuscle     MuscleGroup?
+  secondaryMuscles  MuscleGroup[]
+  equipment         Equipment?
+  movementPattern   MovementPattern?
+  difficulty        Difficulty?
+  isCompound        Boolean?
+  exerciseFamily    String?
+  isCustom          Boolean           @default(false)
+  createdAt         DateTime          @default(now())
+  workoutExercises  WorkoutExercise[]
   templateExercises TemplateExercise[]
 }
 

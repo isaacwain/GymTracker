@@ -29,7 +29,7 @@ export default async function TemplateDetailPage({
 
   const allExercises = await prisma.exercise.findMany({
     orderBy: { name: "asc" },
-    select: { id: true, name: true, muscleGroup: true },
+    select: { id: true, name: true, primaryMuscle: true },
   });
 
   const alreadyAddedIds = template.exercises.map((te) => te.exerciseId);
@@ -65,8 +65,8 @@ export default async function TemplateDetailPage({
                   <span className="text-sm text-gray-400 w-5 font-medium">{i + 1}</span>
                   <div>
                     <p className="text-sm font-medium text-gray-900">{te.exercise.name}</p>
-                    {te.exercise.muscleGroup && (
-                      <p className="text-xs text-gray-400">{te.exercise.muscleGroup}</p>
+                    {te.exercise.primaryMuscle && (
+                      <p className="text-xs text-gray-400">{te.exercise.primaryMuscle}</p>
                     )}
                   </div>
                 </div>

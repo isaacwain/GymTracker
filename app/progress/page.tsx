@@ -24,7 +24,7 @@ export default async function ProgressPage({
       },
     },
     orderBy: { name: "asc" },
-    select: { id: true, name: true, muscleGroup: true },
+    select: { id: true, name: true, primaryMuscle: true },
   });
 
   let exercise = exerciseId ? allExercises.find((e) => e.id === exerciseId) ?? null : null;

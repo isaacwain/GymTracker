@@ -6,7 +6,7 @@ import { addExerciseById, createAndAddExercise } from "@/app/actions";
 type Exercise = {
   id: number;
   name: string;
-  muscleGroup: string | null;
+  primaryMuscle: string | null;
 };
 
 type Props = {
@@ -49,7 +49,7 @@ export default function ExercisePicker({ sessionId, allExercises, alreadyAddedId
                 >
                   <span className="font-medium text-gray-800">{ex.name}</span>
                   <span className="text-xs text-gray-400">
-                    {added ? "added" : ex.muscleGroup ?? ""}
+                    {added ? "added" : ex.primaryMuscle ?? ""}
                   </span>
                 </button>
               </li>
