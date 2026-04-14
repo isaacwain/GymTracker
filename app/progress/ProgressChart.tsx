@@ -16,6 +16,7 @@ type DataPoint = {
   date: string;
   maxWeight: number;
   totalVolume: number;
+  estimated1RM: number;
 };
 
 export default function ProgressChart({ data }: { data: DataPoint[] }) {
@@ -33,6 +34,26 @@ export default function ProgressChart({ data }: { data: DataPoint[] }) {
               type="monotone"
               dataKey="maxWeight"
               stroke="#2563eb"
+              strokeWidth={2}
+              dot={{ r: 4 }}
+              activeDot={{ r: 6 }}
+            />
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
+
+      <div>
+        <h2 className="text-sm font-medium text-gray-500 mb-3">Estimated 1RM (kg)</h2>
+        <ResponsiveContainer width="100%" height={220}>
+          <LineChart data={data}>
+            <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+            <XAxis dataKey="date" tick={{ fontSize: 12 }} />
+            <YAxis tick={{ fontSize: 12 }} unit="kg" />
+            <Tooltip formatter={(v) => [`${v}kg`, "Est. 1RM"]} />
+            <Line
+              type="monotone"
+              dataKey="estimated1RM"
+              stroke="#7c3aed"
               strokeWidth={2}
               dot={{ r: 4 }}
               activeDot={{ r: 6 }}

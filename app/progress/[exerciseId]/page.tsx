@@ -47,6 +47,13 @@ export default async function ExerciseProgressPage({
             <ProgressChart data={chartData} />
           </div>
         )}
+
+        <p className="text-xs text-gray-400 mt-6">
+          Estimated 1RM is calculated using the Epley formula:{" "}
+          <span className="font-medium text-gray-500">1RM = weight × (1 + reps / 30)</span>.
+          The best result across all sets in a session is shown. This is an estimate — actual
+          one-rep max may vary.
+        </p>
       </div>
     </div>
   );

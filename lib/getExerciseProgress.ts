@@ -4,6 +4,7 @@ export type ChartDataPoint = {
   date: string;
   maxWeight: number;
   totalVolume: number;
+  estimated1RM: number;
 };
 
 export type ExerciseProgressResult = {
@@ -40,6 +41,11 @@ export async function getExerciseProgress(
       (sum, s) => sum + (s.weight ?? 0) * (s.reps ?? 0),
       0
     );
+    const estimated1RM = Math.max(
+      ...we.sets
+        .filter((s) => s.weight != null && s.reps != null && s.reps > 0)
+        .map((s) => Math.round(s.weight! * (1 + s.reps! / 30)))
+    );
     return {
       date: we.session.startedAt.toLocaleDateString(undefined, {
         month: "short",
@@ -47,6 +53,7 @@ export async function getExerciseProgress(
       }),
       maxWeight,
       totalVolume,
+      estimated1RM,
     };
   });
 
