@@ -2,6 +2,7 @@ import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import { requireAuth } from "@/lib/session";
 import CalendarView from "./calendar/CalendarView";
+import DeleteAllButton from "./DeleteAllButton";
 
 function formatDuration(start: Date, end: Date) {
   const mins = Math.round((end.getTime() - start.getTime()) / 60000);
@@ -114,6 +115,8 @@ export default async function HistoryPage({
             ))}
           </ul>
         )}
+
+        <DeleteAllButton />
       </div>
     </div>
   );

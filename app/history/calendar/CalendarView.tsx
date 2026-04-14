@@ -115,17 +115,25 @@ export default function CalendarView({
               <button
                 key={day}
                 onClick={() => setSelectedDay(isSelected ? null : day)}
-                className={`
-                  relative flex flex-col items-center justify-center h-10 rounded-xl text-sm font-medium transition-colors
-                  ${isSelected ? "bg-indigo-600 text-white" : isToday ? "bg-indigo-50 text-indigo-700" : "hover:bg-gray-50 text-gray-700"}
-                `}
+                className="relative flex items-center justify-center h-10 rounded-xl transition-colors hover:bg-gray-50"
               >
-                {day}
-                {hasWorkout && (
-                  <span
-                    className={`absolute bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full ${isSelected ? "bg-white/70" : "bg-indigo-400"}`}
-                  />
-                )}
+                <span
+                  className={`
+                    flex items-center justify-center w-8 h-8 rounded-full text-sm font-medium transition-colors
+                    ${isSelected
+                      ? "bg-indigo-600 text-white"
+                      : hasWorkout && isToday
+                        ? "ring-2 ring-indigo-500 bg-indigo-50 text-indigo-700"
+                        : hasWorkout
+                          ? "ring-2 ring-indigo-400 text-gray-700"
+                          : isToday
+                            ? "bg-indigo-50 text-indigo-700"
+                            : "text-gray-700"
+                    }
+                  `}
+                >
+                  {day}
+                </span>
                 {hasWorkout && workouts.length > 1 && !isSelected && (
                   <span className="absolute top-0.5 right-1 text-[9px] font-bold text-indigo-400 leading-none">
                     {workouts.length}

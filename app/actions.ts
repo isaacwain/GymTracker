@@ -200,6 +200,22 @@ export async function startWorkoutFromTemplate(templateId: number): Promise<void
   redirect(`/workout/${session.id}`);
 }
 
+export async function deleteAllHistory(): Promise<void> {
+  const { userId } = await requireAuth();
+
+  const workoutExercises = await prisma.workoutExercise.findMany({
+    where: { session: { clerkUserId: userId } },
+    select: { id: true },
+  });
+  const weIds = workoutExercises.map((we) => we.id);
+
+  await prisma.setEntry.deleteMany({ where: { workoutExerciseId: { in: weIds } } });
+  await prisma.workoutExercise.deleteMany({ where: { session: { clerkUserId: userId } } });
+  await prisma.workoutSession.deleteMany({ where: { clerkUserId: userId } });
+
+  redirect("/history");
+}
+
 export async function deleteWorkout(sessionId: number): Promise<void> {
   const { userId } = await requireAuth();
   const session = await prisma.workoutSession.findUnique({ where: { id: sessionId } });
