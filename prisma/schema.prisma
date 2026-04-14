@@ -87,6 +87,7 @@ model WorkoutTemplate {
   name        String
   createdAt   DateTime           @default(now())
   exercises   TemplateExercise[]
+  routines    RoutineTemplate[]
 
   @@index([clerkUserId])
 }
@@ -121,4 +122,25 @@ model SetEntry {
   createdAt         DateTime        @default(now())
   updatedAt         DateTime        @updatedAt
   workoutExercise   WorkoutExercise @relation(fields: [workoutExerciseId], references: [id])
+}
+
+model Routine {
+  id           Int               @id @default(autoincrement())
+  clerkUserId  String
+  name         String
+  description  String?
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+  templates    RoutineTemplate[]
+
+  @@index([clerkUserId])
+}
+
+model RoutineTemplate {
+  id          Int             @id @default(autoincrement())
+  routineId   Int
+  templateId  Int
+  orderIndex  Int
+  routine     Routine         @relation(fields: [routineId], references: [id], onDelete: Cascade)
+  template    WorkoutTemplate @relation(fields: [templateId], references: [id], onDelete: Cascade)
 }

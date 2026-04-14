@@ -14,6 +14,20 @@ export async function startWorkout() {
   redirect(`/workout/${session.id}`);
 }
 
+export async function startWorkoutOnDate(dateStr: string) {
+  const { userId } = await requireAuth();
+
+  const [year, month, day] = dateStr.split("-").map(Number);
+  const startedAt = new Date(Date.UTC(year, month - 1, day, 12, 0, 0));
+  const endedAt = new Date(Date.UTC(year, month - 1, day, 13, 0, 0));
+
+  const session = await prisma.workoutSession.create({
+    data: { clerkUserId: userId, startedAt, endedAt },
+  });
+
+  redirect(`/workout/${session.id}`);
+}
+
 async function appendExerciseToSession(sessionId: number, exerciseId: number) {
   const existing = await prisma.workoutExercise.findFirst({
     where: { workoutSessionId: sessionId, exerciseId },

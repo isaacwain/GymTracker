@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { startWorkoutOnDate } from "@/app/actions";
 
 type DayWorkout = { id: number; time: string };
 
@@ -51,6 +52,12 @@ export default function CalendarView({
 
   const selectedKey = selectedDay ? toKey(year, month, selectedDay) : null;
   const selectedWorkouts = selectedKey ? (workoutsByDay[selectedKey] ?? []) : [];
+
+  const isNotFuture = selectedDay !== null && (
+    year < today.getFullYear() ||
+    (year === today.getFullYear() && month < today.getMonth()) ||
+    (year === today.getFullYear() && month === today.getMonth() && selectedDay <= today.getDate())
+  );
 
   const cells: (number | null)[] = [
     ...Array(offset).fill(null),
@@ -137,9 +144,9 @@ export default function CalendarView({
             {MONTH_NAMES[month]} {selectedDay}
           </p>
           {selectedWorkouts.length === 0 ? (
-            <p className="text-sm text-gray-400">No workouts on this day.</p>
+            <p className="text-sm text-gray-400 mb-3">No workouts on this day.</p>
           ) : (
-            <ul className="space-y-2">
+            <ul className="space-y-2 mb-3">
               {selectedWorkouts.map((w) => (
                 <li key={w.id}>
                   <Link
@@ -152,6 +159,16 @@ export default function CalendarView({
                 </li>
               ))}
             </ul>
+          )}
+          {isNotFuture && selectedKey && (
+            <form action={startWorkoutOnDate.bind(null, selectedKey)}>
+              <button
+                type="submit"
+                className="w-full bg-indigo-50 text-indigo-600 hover:bg-indigo-100 py-2.5 rounded-xl text-sm font-medium transition-colors"
+              >
+                {selectedWorkouts.length === 0 ? "Log workout" : "Log another workout"}
+              </button>
+            </form>
           )}
         </div>
       )}
