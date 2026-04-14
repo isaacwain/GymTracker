@@ -33,6 +33,13 @@ function formatDateFull(ts: number) {
   });
 }
 
+function yDomain(values: number[]): [number, number] {
+  const min = Math.min(...values);
+  const max = Math.max(...values);
+  const padding = (max - min) * 0.1 || max * 0.1;
+  return [Math.max(0, Math.floor(min - padding)), Math.ceil(max + padding)];
+}
+
 export default function ProgressChart({ data }: { data: DataPoint[] }) {
   const timestamps = data.map((d) => d.timestamp);
   const domain: [number, number] = [Math.min(...timestamps), Math.max(...timestamps)];
@@ -52,7 +59,7 @@ export default function ProgressChart({ data }: { data: DataPoint[] }) {
               tickFormatter={formatDate}
               tick={{ fontSize: 12 }}
             />
-            <YAxis tick={{ fontSize: 12 }} unit="kg" />
+            <YAxis tick={{ fontSize: 12 }} unit="kg" domain={yDomain([...data.map(d => d.maxWeight), ...data.map(d => d.estimated1RM)])} />
             <Tooltip
               labelFormatter={(v) => formatDateFull(v as number)}
               formatter={(v, name) => [
@@ -92,7 +99,7 @@ export default function ProgressChart({ data }: { data: DataPoint[] }) {
           <BarChart data={data}>
             <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
             <XAxis dataKey="date" tick={{ fontSize: 12 }} />
-            <YAxis tick={{ fontSize: 12 }} unit="kg" />
+            <YAxis tick={{ fontSize: 12 }} unit="kg" domain={yDomain(data.map(d => d.totalVolume))} />
             <Tooltip formatter={(v) => [`${v}kg`, "Total volume"]} />
             <Bar dataKey="totalVolume" fill="#93c5fd" radius={[3, 3, 0, 0]} />
           </BarChart>
