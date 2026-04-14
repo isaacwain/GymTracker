@@ -15,6 +15,7 @@ import {
 
 type DataPoint = {
   timestamp: number;
+  date: string;
   maxWeight: number;
   totalVolume: number;
   estimated1RM: number;
@@ -90,19 +91,9 @@ export default function ProgressChart({ data }: { data: DataPoint[] }) {
         <ResponsiveContainer width="100%" height={180}>
           <BarChart data={data}>
             <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-            <XAxis
-              dataKey="timestamp"
-              type="number"
-              scale="time"
-              domain={domain}
-              tickFormatter={formatDate}
-              tick={{ fontSize: 12 }}
-            />
+            <XAxis dataKey="date" tick={{ fontSize: 12 }} />
             <YAxis tick={{ fontSize: 12 }} unit="kg" />
-            <Tooltip
-              labelFormatter={(v) => formatDateFull(v as number)}
-              formatter={(v) => [`${v}kg`, "Total volume"]}
-            />
+            <Tooltip formatter={(v) => [`${v}kg`, "Total volume"]} />
             <Bar dataKey="totalVolume" fill="#93c5fd" radius={[3, 3, 0, 0]} />
           </BarChart>
         </ResponsiveContainer>

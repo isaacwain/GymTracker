@@ -2,6 +2,7 @@ import { prisma } from "./prisma";
 
 export type ChartDataPoint = {
   timestamp: number;
+  date: string;
   maxWeight: number;
   totalVolume: number;
   estimated1RM: number;
@@ -48,6 +49,7 @@ export async function getExerciseProgress(
     );
     return {
       timestamp: we.session.startedAt.getTime(),
+      date: we.session.startedAt.toLocaleDateString(undefined, { month: "short", day: "numeric" }),
       maxWeight,
       totalVolume,
       estimated1RM,
